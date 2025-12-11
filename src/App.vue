@@ -2,7 +2,7 @@
 import {onMounted, ref} from 'vue';
 import Download from './Download/index.vue'
 import Read from './Read/index.vue'
-import Write from './Write/index.vue'
+import Shell from './Shell/index.vue'
 
 const route = ref('')
 const enterAction = ref({})
@@ -22,12 +22,11 @@ onMounted(() => {
   <template v-if="route === 'download'">
     <Download :enterAction="enterAction"></Download>
   </template>
+  <template v-if="route === 'shell'">
+    <Shell :enterAction="enterAction"></Shell>
+  </template>
 
   <template v-if="route === 'read'">
     <Read :enterAction="enterAction"></Read>
-  </template>
-
-  <template v-if="route === 'write'">
-    <Write :enterAction="enterAction"></Write>
   </template>
 </template>

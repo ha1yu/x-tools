@@ -8,11 +8,19 @@
   "features": [
     {
       "code": "download",
-      "explain": "下载生成命令",
+      "explain": "生成文件下载命令",
       "cmds": [
         "下载",
         "down",
         "download"
+      ]
+    },
+    {
+      "code": "shell",
+      "explain": "生成反弹shell命令",
+      "cmds": [
+        "反弹shell",
+        "shell"
       ]
     },
     {
@@ -25,21 +33,6 @@
           "fileType": "file",
           "maxLength": 1,
           "label": "读文件"
-        }
-      ]
-    },
-    {
-      "code": "write",
-      "explain": "匹配指令示例，使用 node.js 能力写文件",
-      "mainHide": true,
-      "cmds": [
-        {
-          "type": "over",
-          "label": "保存为文件"
-        },
-        {
-          "type": "img",
-          "label": "保存为文件"
         }
       ]
     }
